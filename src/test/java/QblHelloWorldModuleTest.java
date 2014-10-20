@@ -10,9 +10,9 @@ public class QblHelloWorldModuleTest {
 
 	@Test
 	public void test() throws InstantiationException, IllegalAccessException {
-		ModuleManager mm = new ModuleManager();
-		mm.startModule(QblHelloWorldModule.class);
-		mm.shutdown();
+		//ModuleManager mm = new ModuleManager();
+		//mm.startModule(QblHelloWorldModule.class);
+		//mm.shutdown();
 	}
 
 }

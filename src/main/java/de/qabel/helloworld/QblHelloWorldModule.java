@@ -1,6 +1,9 @@
 package de.qabel.helloworld;
 
-import de.qabel.core.drop.DropController;
+import java.util.Date;
+
+import de.qabel.core.config.Contacts;
+import de.qabel.core.drop.Drop;
 import de.qabel.core.drop.DropMessage;
 import de.qabel.core.drop.DropQueueCallback;
 import de.qabel.core.drop.ModelObject;
@@ -8,6 +11,7 @@ import de.qabel.core.module.Module;
 
 public class QblHelloWorldModule extends Module {
 	class HelloWorldObject extends ModelObject {
+		public HelloWorldObject() { }
 		private String str;
 
 		public String getStr() {
@@ -18,22 +22,35 @@ public class QblHelloWorldModule extends Module {
 			this.str = str;
 		}
 	}
-	
-	DropController mDropController;
+
 	private DropQueueCallback<HelloWorldObject> mQueue;
+
 	public QblHelloWorldModule() {
 		super(QblHelloWorldModule.class.getName());
-		mDropController = new DropController();
 	}
 
 	@Override
 	public void init() {
 		mQueue = new DropQueueCallback<HelloWorldObject>();
-		mDropController.register(HelloWorldObject.class, mQueue);
+		getModuleManager().getDropController().register(HelloWorldObject.class, mQueue);
 	}
 
 	public void _run() throws InterruptedException {
-		for(DropMessage<HelloWorldObject> msg = mQueue.take(); msg != null; msg = mQueue.take()) {
+		DropMessage<HelloWorldObject> dm = new DropMessage<HelloWorldObject>();
+		HelloWorldObject data = new HelloWorldObject();
+		data.setStr("Hello World");
+		dm.setData(data);
+		
+        Date date = new Date();
+        dm.setTime(date);
+        dm.setVersion(1);
+        dm.setModelObject(HelloWorldObject.class);
+        Drop<HelloWorldObject> drop = new Drop<HelloWorldObject>();
+        Contacts contacts = new Contacts();
+        drop.sendAndForget(dm, contacts);
+
+		for (DropMessage<HelloWorldObject> msg = mQueue.take(); msg != null; msg = mQueue
+				.take()) {
 			System.out.println(msg.getData().getStr());
 		}
 	}
