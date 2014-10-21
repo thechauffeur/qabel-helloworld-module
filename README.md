@@ -22,6 +22,4 @@ Helloworld example module for Qabel
    ```
 0. Continue with the qabel-desktop client
 
-   ```
    https://github.com/Qabel/qabel-desktop
-   ```
