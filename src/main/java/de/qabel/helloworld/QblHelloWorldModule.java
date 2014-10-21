@@ -2,7 +2,6 @@ package de.qabel.helloworld;
 
 import java.util.Date;
 
-import de.qabel.core.config.Contacts;
 import de.qabel.core.drop.Drop;
 import de.qabel.core.drop.DropMessage;
 import de.qabel.core.drop.DropQueueCallback;
@@ -45,9 +44,11 @@ public class QblHelloWorldModule extends Module {
         dm.setTime(date);
         dm.setVersion(1);
         dm.setModelObject(HelloWorldObject.class);
+
         Drop<HelloWorldObject> drop = new Drop<HelloWorldObject>();
-        Contacts contacts = new Contacts();
-        drop.sendAndForget(dm, contacts);
+
+        // Send hello world to all contacts.
+        drop.sendAndForget(dm, this.getModuleManager().getDropController().getContacts().getContacts());
 
 		for (DropMessage<HelloWorldObject> msg = mQueue.take(); msg != null; msg = mQueue
 				.take()) {
