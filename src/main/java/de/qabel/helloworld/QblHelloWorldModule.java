@@ -2,6 +2,7 @@ package de.qabel.helloworld;
 
 import java.util.Date;
 
+import de.qabel.core.config.Contact;
 import de.qabel.core.drop.Drop;
 import de.qabel.core.drop.DropMessage;
 import de.qabel.core.drop.DropQueueCallback;
@@ -34,21 +35,21 @@ public class QblHelloWorldModule extends Module {
 		getModuleManager().getDropController().register(HelloWorldObject.class, mQueue);
 	}
 
-	public void _run() throws InterruptedException {
-		DropMessage<HelloWorldObject> dm = new DropMessage<HelloWorldObject>();
-		HelloWorldObject data = new HelloWorldObject();
-		data.setStr("Hello World");
-		dm.setData(data);
-		
-        Date date = new Date();
-        dm.setTime(date);
-        dm.setVersion(1);
-        dm.setModelObject(HelloWorldObject.class);
+    /**
+     * Send "Hello World" to all contacts.
+     */
+    private void sendMessages() {
+        HelloWorldObject data = new HelloWorldObject();
+        data.setStr("Hello World");
 
-        Drop<HelloWorldObject> drop = new Drop<HelloWorldObject>();
+        for (Contact contact : this.getModuleManager().getDropController().getContacts().getContacts()) {
+            Drop<HelloWorldObject> drop = new Drop<HelloWorldObject>();
+            drop.sendAndForget(data, contact);
+        }
+    }
 
-        // Send hello world to all contacts.
-        drop.sendAndForget(dm, this.getModuleManager().getDropController().getContacts().getContacts());
+    public void _run() throws InterruptedException {
+        this.sendMessages();
 
 		for (DropMessage<HelloWorldObject> msg = mQueue.take(); msg != null; msg = mQueue
 				.take()) {
