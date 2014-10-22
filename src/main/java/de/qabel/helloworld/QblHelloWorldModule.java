@@ -42,10 +42,12 @@ public class QblHelloWorldModule extends Module {
         HelloWorldObject data = new HelloWorldObject();
         data.setStr("Hello World");
 
-        for (Contact contact : this.getModuleManager().getDropController().getContacts().getContacts()) {
-            Drop<HelloWorldObject> drop = new Drop<HelloWorldObject>();
-            drop.sendAndForget(data, contact);
-        }
+        DropMessage<HelloWorldObject> dm = new DropMessage<HelloWorldObject>();
+        dm.setData(data);
+        dm.setModelObject(HelloWorldObject.class);
+
+        Drop<HelloWorldObject> drop = new Drop<HelloWorldObject>();
+        drop.sendAndForget(dm, this.getModuleManager().getDropController().getContacts().getContacts());
     }
 
     public void _run() throws InterruptedException {
