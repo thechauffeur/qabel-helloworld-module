@@ -1,9 +1,7 @@
 package de.qabel.helloworld;
 
-import java.util.Date;
-
-import de.qabel.core.config.Contact;
-import de.qabel.core.drop.Drop;
+import de.qabel.ackack.event.EventEmitter;
+import de.qabel.core.drop.DropActor;
 import de.qabel.core.drop.DropMessage;
 import de.qabel.core.drop.DropQueueCallback;
 import de.qabel.core.drop.ModelObject;
@@ -23,16 +21,8 @@ public class QblHelloWorldModule extends Module {
 		}
 	}
 
-	private DropQueueCallback<HelloWorldObject> mQueue;
-
-	public QblHelloWorldModule() {
-		super(QblHelloWorldModule.class.getName());
-	}
-
 	@Override
 	public void init() {
-		mQueue = new DropQueueCallback<HelloWorldObject>();
-		getModuleManager().getDropController().register(HelloWorldObject.class, mQueue);
 	}
 
     /**
@@ -46,26 +36,11 @@ public class QblHelloWorldModule extends Module {
         dm.setData(data);
         dm.setModelObject(HelloWorldObject.class);
 
-        Drop<HelloWorldObject> drop = new Drop<HelloWorldObject>();
-        drop.sendAndForget(dm, this.getModuleManager().getDropController().getContacts().getContacts());
+		DropActor.send(EventEmitter.getDefault(), dm, this.getModuleManager().getDropActor().getContacts().getContacts());
     }
 
-    public void _run() throws InterruptedException {
-        this.sendMessages();
-
-		for (DropMessage<HelloWorldObject> msg = mQueue.take(); msg != null; msg = mQueue
-				.take()) {
-			System.out.println(msg.getData().getStr());
-		}
-	}
-
 	@Override
-	public void run() {
-		try {
-			_run();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    protected void onDropMessage(DropMessage<?> dm) {
+        System.out.println(dm.getData().as(HelloWorldObject.class).getStr());
+    }
 }
