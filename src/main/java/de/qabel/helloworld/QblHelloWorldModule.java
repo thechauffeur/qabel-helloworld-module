@@ -2,7 +2,6 @@ package de.qabel.helloworld;
 
 import de.qabel.ackack.event.EventEmitter;
 import de.qabel.core.config.Contact;
-import de.qabel.core.config.Contacts;
 import de.qabel.core.config.Entity;
 import de.qabel.core.drop.DropActor;
 import de.qabel.core.drop.DropMessage;
@@ -12,6 +11,10 @@ import de.qabel.core.module.Module;
 import java.util.HashSet;
 
 public class QblHelloWorldModule extends Module {
+	protected QblHelloWorldModule(EventEmitter emitter) {
+		super(emitter);
+	}
+
 	class HelloWorldObject extends ModelObject {
 		public HelloWorldObject() { }
 		private String str;
