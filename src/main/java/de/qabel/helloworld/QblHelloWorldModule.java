@@ -1,15 +1,20 @@
 package de.qabel.helloworld;
 
-import java.util.Date;
-
+import de.qabel.ackack.event.EventEmitter;
 import de.qabel.core.config.Contact;
-import de.qabel.core.drop.Drop;
+import de.qabel.core.config.Entity;
+import de.qabel.core.drop.DropActor;
 import de.qabel.core.drop.DropMessage;
-import de.qabel.core.drop.DropQueueCallback;
 import de.qabel.core.drop.ModelObject;
 import de.qabel.core.module.Module;
 
+import java.util.HashSet;
+
 public class QblHelloWorldModule extends Module {
+	protected QblHelloWorldModule(EventEmitter emitter) {
+		super(emitter);
+	}
+
 	class HelloWorldObject extends ModelObject {
 		public HelloWorldObject() { }
 		private String str;
@@ -23,16 +28,8 @@ public class QblHelloWorldModule extends Module {
 		}
 	}
 
-	private DropQueueCallback<HelloWorldObject> mQueue;
-
-	public QblHelloWorldModule() {
-		super(QblHelloWorldModule.class.getName());
-	}
-
 	@Override
 	public void init() {
-		mQueue = new DropQueueCallback<HelloWorldObject>();
-		getModuleManager().getDropController().register(HelloWorldObject.class, mQueue);
 	}
 
     /**
@@ -42,30 +39,15 @@ public class QblHelloWorldModule extends Module {
         HelloWorldObject data = new HelloWorldObject();
         data.setStr("Hello World");
 
-        DropMessage<HelloWorldObject> dm = new DropMessage<HelloWorldObject>();
-        dm.setData(data);
-        dm.setModelObject(HelloWorldObject.class);
+		Entity sender = null; // TODO
+        DropMessage<HelloWorldObject> dm = new DropMessage<>(sender, data);
+		HashSet<Contact> contacts = new HashSet<>(this.getModuleManager().getDropActor().getContacts().getContacts());
 
-        Drop<HelloWorldObject> drop = new Drop<HelloWorldObject>();
-        drop.sendAndForget(dm, this.getModuleManager().getDropController().getContacts().getContacts());
+		DropActor.send(EventEmitter.getDefault(), dm, contacts);
     }
 
-    public void _run() throws InterruptedException {
-        this.sendMessages();
-
-		for (DropMessage<HelloWorldObject> msg = mQueue.take(); msg != null; msg = mQueue
-				.take()) {
-			System.out.println(msg.getData().getStr());
-		}
-	}
-
 	@Override
-	public void run() {
-		try {
-			_run();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    protected void onDropMessage(DropMessage<?> dm) {
+        System.out.println(dm.getData().as(HelloWorldObject.class).getStr());
+    }
 }
