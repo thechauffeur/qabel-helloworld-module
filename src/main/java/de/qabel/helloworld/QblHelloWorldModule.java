@@ -11,8 +11,8 @@ import de.qabel.core.module.Module;
 import java.util.HashSet;
 
 public class QblHelloWorldModule extends Module {
-	protected QblHelloWorldModule(EventEmitter emitter) {
-		super(emitter);
+	protected QblHelloWorldModule() {
+		super();
 	}
 
 	class HelloWorldObject extends ModelObject {
@@ -46,7 +46,6 @@ public class QblHelloWorldModule extends Module {
 		DropActor.send(EventEmitter.getDefault(), dm, contacts);
     }
 
-	@Override
     protected void onDropMessage(DropMessage<?> dm) {
         System.out.println(dm.getData().as(HelloWorldObject.class).getStr());
     }
