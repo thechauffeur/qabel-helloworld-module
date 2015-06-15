@@ -25,7 +25,6 @@ import java.util.Arrays;
 public class QblHelloWorldModule extends Module {
 
 	private ContactsActor contactsActor;
-	private Identities mIdentities;
 	private Contacts mContacts;
 
 	public QblHelloWorldModule(ModuleManager moduleManager) {
@@ -34,16 +33,12 @@ public class QblHelloWorldModule extends Module {
 
 	@Override
 	public void init() {
-		this.mIdentities = new Identities();
 		this.mContacts = new Contacts();
 		this.contactsActor = getModuleManager().getContactsActor();
 
-		// Register to Contact and Identity changed events
+		// Register to Contact changed events
 		on(EventNameConstants.EVENT_CONTACT_ADDED, this);
 		on(EventNameConstants.EVENT_CONTACT_REMOVED, this);
-
-		on(EventNameConstants.EVENT_IDENTITY_ADDED, this);
-		on(EventNameConstants.EVENT_IDENTITY_REMOVED, this);
 
 		// Register to HelloWorldObject DropMessages
 		on(DropActor.EVENT_DROP_MESSAGE_RECEIVED_PREFIX + HelloWorldObject.class.getCanonicalName(), this);
@@ -88,7 +83,7 @@ public class QblHelloWorldModule extends Module {
 
 	@Override
 	public void onEvent(String event, MessageInfo info, Object... data) {
-		// Handle Contact and Identity changed and DropMessage received events
+		// Handle Contact changed and DropMessage received events
 		switch (event) {
 			case EventNameConstants.EVENT_CONTACT_ADDED:
 				if(data[0] instanceof Contact) {
@@ -98,16 +93,6 @@ public class QblHelloWorldModule extends Module {
 			case EventNameConstants.EVENT_CONTACT_REMOVED:
 				if(data[0] instanceof String) {
 					mContacts.remove((String) data[0]);
-				}
-				break;
-			case EventNameConstants.EVENT_IDENTITY_ADDED:
-				if(data[0] instanceof Identity) {
-					mIdentities.put((Identity) data[0]);
-				}
-				break;
-			case EventNameConstants.EVENT_IDENTITY_REMOVED:
-				if(data[0] instanceof String) {
-					mIdentities.remove((String) data[0]);
 				}
 				break;
 			default:
