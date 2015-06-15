@@ -21,6 +21,10 @@ dependencies {
 	compile project(":ackack")
 }
 
+tasks.withType(Test) {
+	systemProperty "java.library.path", "."
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
 }
