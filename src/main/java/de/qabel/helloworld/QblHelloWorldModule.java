@@ -25,6 +25,7 @@ import java.util.Arrays;
 public class QblHelloWorldModule extends Module {
 
 	private ContactsActor contactsActor;
+	// mContacts is a thread safe EntityMap and thus can be used by both threads
 	private Contacts mContacts;
 
 	public QblHelloWorldModule(ModuleManager moduleManager) {
@@ -103,5 +104,13 @@ public class QblHelloWorldModule extends Module {
 				}
 				break;
 		}
+	}
+
+	/**
+	 * This method can be used to do cleanup work in your module before it gets stopped.
+	 */
+	@Override
+	public synchronized void stopModule() {
+		super.stopModule();
 	}
 }
