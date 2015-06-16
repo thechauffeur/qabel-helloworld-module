@@ -24,7 +24,7 @@ import java.util.Arrays;
  */
 public class QblHelloWorldModule extends Module {
 
-	private ContactsActor contactsActor;
+	private ResourceActor resourceActor;
 	// mContacts is a thread safe EntityMap and thus can be used by both threads
 	private Contacts mContacts;
 
@@ -35,7 +35,7 @@ public class QblHelloWorldModule extends Module {
 	@Override
 	public void init() {
 		this.mContacts = new Contacts();
-		this.contactsActor = getModuleManager().getContactsActor();
+		this.resourceActor = getModuleManager().getResourceActor();
 
 		// Register to Contact changed events
 		on(EventNameConstants.EVENT_CONTACT_ADDED, this);
@@ -45,7 +45,7 @@ public class QblHelloWorldModule extends Module {
 		on(DropActor.EVENT_DROP_MESSAGE_RECEIVED_PREFIX + HelloWorldObject.class.getCanonicalName(), this);
 
 		// Retrieve contacts from ContactsActor
-		contactsActor.retrieveContacts(this, new Responsible() {
+		resourceActor.retrieveContacts(this, new Responsible() {
 			@Override
 			public void onResponse(Serializable... data) {
 				ArrayList<Contact> receivedContacts = new ArrayList<>(Arrays.asList((Contact[]) data));
