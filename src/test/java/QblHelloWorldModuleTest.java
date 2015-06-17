@@ -30,13 +30,13 @@ public class QblHelloWorldModuleTest {
 
 		Identities identities = new Identities();
 		identities.put(alice);
-		moduleManager.getConfigActor().writeIdentities(identities.getIdentities().toArray(new Identity[0]));
+		moduleManager.getResourceActor().writeIdentities(identities.getIdentities().toArray(new Identity[0]));
 
 		Contact bobAsContactForAlice = new Contact(alice, bobDropURLs, bob.getEcPublicKey());
 
 		Contacts contacts = new Contacts();
 		contacts.put(bobAsContactForAlice);
-		moduleManager.getContactsActor().writeContacts(contacts.getContacts().toArray(new Contact[0]));
+		moduleManager.getResourceActor().writeContacts(contacts.getContacts().toArray(new Contact[0]));
 
 		DropActor dropActor = new DropActor(EventEmitter.getDefault());
 		Thread dropActorThread = new Thread(dropActor);
