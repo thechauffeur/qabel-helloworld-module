@@ -83,7 +83,7 @@ public class QblHelloWorldModule extends Module {
 
 	@Override
 	public void onEvent(String event, MessageInfo info, Object... data) {
-		// Handle Ccd .ontact changed and DropMessage received events
+		// Handle Contact changed and DropMessage received events
 		switch (event) {
 			case EventNameConstants.EVENT_CONTACT_ADDED:
 				if(data[0] instanceof Contact) {
