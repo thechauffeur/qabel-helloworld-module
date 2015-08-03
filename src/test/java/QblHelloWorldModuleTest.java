@@ -36,7 +36,7 @@ public class QblHelloWorldModuleTest {
 		identities.put(alice);
 		moduleManager.getResourceActor().writeIdentities(identities.getIdentities().toArray(new Identity[0]));
 
-		Contact bobAsContactForAlice = new Contact(alice, bobDropURLs, bob.getEcPublicKey());
+		Contact bobAsContactForAlice = new Contact(alice, "Bob", bobDropURLs, bob.getEcPublicKey());
 
 		Contacts contacts = new Contacts();
 		contacts.put(bobAsContactForAlice);
