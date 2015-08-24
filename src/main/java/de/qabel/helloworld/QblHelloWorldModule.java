@@ -27,6 +27,7 @@ public class QblHelloWorldModule extends Module {
 	private ResourceActor resourceActor;
 	// mContacts is a thread safe EntityMap and thus can be used by both threads
 	private Contacts mContacts;
+	private static final String HELLO_WORLD_TYPE = "helloworld";
 
 	public QblHelloWorldModule(ModuleManager moduleManager) {
 		super(moduleManager);
@@ -42,7 +43,7 @@ public class QblHelloWorldModule extends Module {
 		on(EventNameConstants.EVENT_CONTACT_REMOVED, this);
 
 		// Register to HelloWorldObject DropMessages
-		on(DropActor.EVENT_DROP_MESSAGE_RECEIVED_PREFIX + HelloWorldObject.class.getCanonicalName(), this);
+		on(DropActor.EVENT_DROP_MESSAGE_RECEIVED_PREFIX + HELLO_WORLD_TYPE, this);
 
 		// Retrieve contacts from ContactsActor
 		resourceActor.retrieveContacts(this, new Responsible() {
@@ -74,10 +75,8 @@ public class QblHelloWorldModule extends Module {
 	 */
 	private void sendMessages() {
 		for (Contact contact : mContacts.getContacts()) {
-			HelloWorldObject data = new HelloWorldObject();
-			data.setStr("Hello this is " + contact.getContactOwner().getAlias());
-
-			DropMessage<HelloWorldObject> dm = new DropMessage<>(contact.getContactOwner(), data);
+			DropMessage dm = new DropMessage(contact.getContactOwner(),
+					"Hello this is " + contact.getContactOwner().getAlias(), HELLO_WORLD_TYPE);
 			DropActor.send(EventEmitter.getDefault(), dm, contact);
 		}
 	}
@@ -98,9 +97,9 @@ public class QblHelloWorldModule extends Module {
 				break;
 			default:
 				if(data[0] instanceof DropMessage) {
-					DropMessage<HelloWorldObject> dropMessage = (DropMessage<HelloWorldObject>) data[0];
+					DropMessage dropMessage = (DropMessage) data[0];
 					System.out.println(dropMessage.getSender().getKeyIdentifier() + ": " +
-							dropMessage.getData().getStr());
+							dropMessage.getDropPayload());
 				}
 				break;
 		}
